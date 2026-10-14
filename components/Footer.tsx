@@ -1,11 +1,8 @@
 import { cacheLife } from "next/cache";
 import Image from "next/image";
 import { site, whatsappHref } from "@/lib/site";
+import Stripes from "./Stripes";
 import WhatsAppIcon from "./WhatsAppIcon";
-
-function formatWhatsapp(digits: string): string {
-  return `+${digits.replace(/\D/g, "")}`;
-}
 
 // El año se prerenderiza y se revalida a diario, así el © se actualiza solo.
 async function currentYear(): Promise<number> {
@@ -14,88 +11,101 @@ async function currentYear(): Promise<number> {
   return new Date().getFullYear();
 }
 
+function formatWhatsapp(digits: string): string {
+  const d = digits.replace(/\D/g, "");
+  // 54 9 2392 546068 → +54 9 2392 54-6068
+  const m = d.match(/^(54)(9)(\d{4})(\d{2})(\d{4})$/);
+  return m ? `+${m[1]} ${m[2]} ${m[3]} ${m[4]}-${m[5]}` : `+${d}`;
+}
+
+const linkClass =
+  "underline decoration-oliva/70 underline-offset-4 hover:decoration-oliva focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-oliva";
+
 export default async function Footer() {
-  const { email, whatsapp, area } = site.contact;
+  const { email, whatsapp, telefonoVisible, telefonoE164, area } = site.contact;
   const wa = whatsappHref();
   const year = await currentYear();
 
   return (
-    <footer id="contacto" className="mt-auto bg-verde text-crema">
-      <section aria-labelledby="contacto-titulo" className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
-        <div className="grid gap-10 md:grid-cols-2">
+    <footer id="contacto" className="mt-auto bg-verde-oscuro text-marfil">
+      <section aria-labelledby="contacto-titulo" className="mx-auto max-w-6xl px-4 py-20 sm:px-6">
+        <div className="grid gap-12 lg:grid-cols-[1fr_1.2fr]">
           <div>
-            <div className="flex items-center gap-3">
-              <Image
-                src="/logo.png"
-                alt={`Logo de ${site.name}`}
-                width={48}
-                height={48}
-                className="h-12 w-12"
-              />
-              <p className="text-xl font-semibold">{site.name}</p>
+            <p className="text-sm font-semibold tracking-widest text-oliva uppercase">Contacto</p>
+            <h2 id="contacto-titulo" className="mt-3 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              Hablemos de su proyecto
+            </h2>
+            <div className="mt-8 inline-block rounded-2xl bg-marfil px-6 py-5">
+              <Image src="/lema.svg" alt={site.lema} width={188} height={26} className="h-auto w-64" />
             </div>
-            <p className="mt-4 max-w-sm text-crema/90">{site.tagline}</p>
+            {wa && (
+              <p className="mt-8">
+                <a
+                  href={wa}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex min-h-12 items-center gap-3 rounded-full bg-oliva px-7 text-base font-semibold text-tinta transition hover:bg-[#d3cf86] focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-oliva"
+                >
+                  <WhatsAppIcon className="h-5 w-5" />
+                  Escribinos por WhatsApp
+                  <span className="sr-only">(se abre en una nueva pestaña)</span>
+                </a>
+              </p>
+            )}
           </div>
 
-          <div>
-            <h2 id="contacto-titulo" className="text-2xl font-bold tracking-tight">
-              Contacto
-            </h2>
-            <dl className="mt-6 space-y-4">
+          <dl className="grid gap-x-8 gap-y-7 sm:grid-cols-2">
+            <div>
+              <dt className="text-sm font-semibold tracking-wider text-oliva uppercase">Correo electrónico</dt>
+              <dd className="mt-1.5 text-lg">
+                <a href={`mailto:${email}`} className={`break-all ${linkClass}`}>
+                  {email}
+                </a>
+              </dd>
+            </div>
+
+            {wa && (
               <div>
-                <dt className="text-sm font-semibold uppercase tracking-wider text-crema/80">
-                  Correo electrónico
-                </dt>
-                <dd className="mt-1">
-                  <a
-                    href={`mailto:${email}`}
-                    className="break-all text-lg underline decoration-crema/40 underline-offset-4 hover:decoration-crema focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crema"
-                  >
-                    {email}
+                <dt className="text-sm font-semibold tracking-wider text-oliva uppercase">WhatsApp</dt>
+                <dd className="mt-1.5 text-lg">
+                  <a href={wa} target="_blank" rel="noopener noreferrer" className={linkClass}>
+                    {formatWhatsapp(whatsapp)}
+                    <span className="sr-only">(se abre en una nueva pestaña)</span>
                   </a>
                 </dd>
               </div>
+            )}
 
-              {/* TODO: se muestra al cargar contact.whatsapp en lib/site.ts */}
-              {wa && (
-                <div>
-                  <dt className="text-sm font-semibold uppercase tracking-wider text-crema/80">
-                    WhatsApp
-                  </dt>
-                  <dd className="mt-1">
-                    <a
-                      href={wa}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 text-lg underline decoration-crema/40 underline-offset-4 hover:decoration-crema focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-crema"
-                    >
-                      <WhatsAppIcon className="h-5 w-5" />
-                      {formatWhatsapp(whatsapp)}
-                      <span className="sr-only">(se abre en una nueva pestaña)</span>
-                    </a>
-                  </dd>
-                </div>
-              )}
+            {telefonoE164 && (
+              <div>
+                <dt className="text-sm font-semibold tracking-wider text-oliva uppercase">Teléfono</dt>
+                <dd className="mt-1.5 text-lg">
+                  <a href={`tel:${telefonoE164}`} className={linkClass}>
+                    {telefonoVisible}
+                  </a>
+                </dd>
+              </div>
+            )}
 
-              {/* TODO: se muestra al cargar contact.area en lib/site.ts */}
-              {area && (
-                <div>
-                  <dt className="text-sm font-semibold uppercase tracking-wider text-crema/80">
-                    Zona de trabajo
-                  </dt>
-                  <dd className="mt-1 text-lg">{area}</dd>
-                </div>
-              )}
-            </dl>
-          </div>
+            {area && (
+              <div>
+                <dt className="text-sm font-semibold tracking-wider text-oliva uppercase">Zona de trabajo</dt>
+                <dd className="mt-1.5 text-lg">{area}</dd>
+              </div>
+            )}
+          </dl>
         </div>
       </section>
 
-      <div className="border-t border-crema/15">
-        <p className="mx-auto max-w-6xl px-4 py-6 text-sm text-crema/80 sm:px-6">
-          © {year} {site.name}. Todos los derechos reservados.
-        </p>
+      <div className="border-t border-marfil/15">
+        <div className="mx-auto flex max-w-6xl flex-col gap-2 px-4 py-6 text-sm text-marfil/85 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <p>
+            © {year} {site.name}. Todos los derechos reservados.
+          </p>
+          <p>{site.areas.join(" · ")}</p>
+        </div>
       </div>
+      <Stripes className="h-2 w-full" />
     </footer>
   );
 }

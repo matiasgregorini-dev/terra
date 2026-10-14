@@ -1,50 +1,63 @@
 import Image from "next/image";
 import { site } from "@/lib/site";
+import Stripes from "./Stripes";
 
+// Portada inspirada en la tapa de la carpeta: logo, áreas, lema y franjas verticales.
 export default function Hero() {
   return (
     <section
       id="inicio"
       aria-labelledby="hero-titulo"
-      className="relative isolate flex min-h-[88svh] items-center overflow-hidden pt-16"
+      className="relative isolate overflow-hidden bg-marfil pt-[4.25rem]"
     >
-      {/* TODO: reemplazar /public/hero.jpg por una foto de campo propia o con licencia (1920×1080 o mayor). */}
-      <Image
-        src="/hero.jpg"
-        alt="Paisaje de campo agropecuario"
-        fill
-        preload
-        sizes="100vw"
-        className="-z-20 object-cover"
-      />
-      {/* Capa oscura para garantizar contraste del texto sobre cualquier foto */}
-      <div
-        aria-hidden="true"
-        className="absolute inset-0 -z-10 bg-gradient-to-b from-black/60 via-black/45 to-verde-oscuro/80"
-      />
-      <div className="mx-auto w-full max-w-6xl px-4 py-20 sm:px-6">
-        <div className="max-w-2xl text-white">
-          <p className="mb-4 inline-block rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-widest text-crema">
-            Consultoría agropecuaria
-          </p>
-          <h1
-            id="hero-titulo"
-            className="text-4xl font-bold tracking-tight text-balance sm:text-5xl lg:text-6xl"
-          >
-            {site.name}
+      <Stripes className="absolute inset-y-0 right-0 -z-10 w-12 sm:w-24 lg:w-[22rem]" />
+
+      <div className="mx-auto flex min-h-[calc(100svh-4.25rem)] max-w-6xl items-center px-4 py-16 pr-16 sm:px-6 sm:pr-32 lg:pr-[24rem]">
+        <div className="w-full max-w-xl">
+          <h1 id="hero-titulo">
+            <Image
+              src="/logo.svg"
+              alt={site.name}
+              width={203}
+              height={109}
+              className="h-auto w-full max-w-[26rem]"
+              preload
+            />
           </h1>
-          <p className="mt-4 text-xl font-medium text-crema sm:text-2xl">
-            {site.tagline}
+
+          <ul className="mt-8 space-y-1.5 text-lg font-medium text-tinta sm:text-xl">
+            {site.areas.map((area) => (
+              <li key={area} className="flex items-center gap-3">
+                <span aria-hidden="true" className="h-2 w-2 shrink-0 rounded-full bg-oliva" />
+                {area}
+              </li>
+            ))}
+          </ul>
+
+          <p className="mt-8">
+            <Image
+              src="/lema.svg"
+              alt={site.lema}
+              width={188}
+              height={26}
+              className="h-auto w-full max-w-[19rem]"
+            />
           </p>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-white/90 sm:text-lg">
-            {site.valueProposition}
-          </p>
-          <a
-            href="#contacto"
-            className="mt-10 inline-flex min-h-12 items-center justify-center rounded-full bg-crema px-8 text-base font-semibold text-verde shadow-lg transition hover:bg-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-crema"
-          >
-            Contactar
-          </a>
+
+          <div className="mt-10 flex flex-wrap gap-3">
+            <a
+              href="#contacto"
+              className="inline-flex min-h-12 items-center justify-center rounded-full bg-verde px-8 text-base font-semibold text-white shadow-md transition hover:bg-verde-oscuro focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-verde"
+            >
+              Contactar
+            </a>
+            <a
+              href="#servicios"
+              className="inline-flex min-h-12 items-center justify-center rounded-full border-2 border-verde px-8 text-base font-semibold text-verde transition hover:bg-verde hover:text-white focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-verde"
+            >
+              Ver servicios
+            </a>
+          </div>
         </div>
       </div>
     </section>

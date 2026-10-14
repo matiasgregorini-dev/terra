@@ -1,7 +1,9 @@
-import About from "@/components/About";
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Hero from "@/components/Hero";
+import Nosotros from "@/components/Nosotros";
+import Profesional from "@/components/Profesional";
+import Servicios from "@/components/Servicios";
 import WhatsAppButton from "@/components/WhatsAppButton";
 
 export default function Home() {
@@ -9,14 +11,16 @@ export default function Home() {
     <>
       <a
         href="#contenido"
-        className="sr-only z-50 rounded-md bg-verde px-4 py-2 text-crema focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+        className="sr-only z-50 rounded-md bg-verde px-4 py-2 text-white focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
       >
         Saltar al contenido
       </a>
       <Header />
       <main id="contenido" className="flex-1">
         <Hero />
-        <About />
+        <Nosotros />
+        <Servicios />
+        <Profesional />
       </main>
       <Footer />
       <WhatsAppButton />

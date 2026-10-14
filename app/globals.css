@@ -1,16 +1,20 @@
 @import "tailwindcss";
 
 @theme {
-  /* Paleta "campo moderno" */
-  --color-verde: #2f5d3a;
-  --color-verde-oscuro: #234a2d;
-  --color-tierra: #8b6b4a;
-  /* Variante oscura de tierra para texto chico: contraste 6.2:1 sobre crema (WCAG AA) */
-  --color-tierra-oscuro: #6e5439;
-  --color-crema: #f5f1e8;
-  --color-tinta: #1f2a22;
+  /* Paleta tomada del logo y la carpeta de presentación (valores exactos del PDF vectorial) */
+  --color-verde: #38633b; /* "T" y colina del logo */
+  --color-verde-oscuro: #2c4f2f; /* variante para hover y fondos con texto oliva */
+  --color-oliva: #c4bf66; /* "e" y sol del logo */
+  --color-oliva-oscuro: #6f6a2e; /* oliva para texto chico sobre claro: 5,2:1 */
+  --color-gris-oliva: #96946b; /* franja de la tapa (decorativo) */
+  --color-piedra: #969480; /* "rr" del logo (decorativo) */
+  --color-grafito: #707061; /* "a" del logo; texto secundario: 5,0:1 sobre blanco */
+  --color-salvia: #7a8a6b; /* "consultora" (decorativo) */
+  --color-marfil: #f8f7f0;
+  --color-tinta: #2a2e26;
 
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-quicksand), var(--font-inter), ui-sans-serif, sans-serif;
 }
 
 :root {
@@ -28,11 +32,20 @@ html {
 }
 
 body {
-  background-color: var(--color-crema);
+  background-color: #ffffff;
   color: var(--color-tinta);
 }
 
 /* Compensa el header fijo al navegar a anclas */
-section[id] {
-  scroll-margin-top: 5rem;
+section[id],
+article[id] {
+  scroll-margin-top: 5.5rem;
+}
+
+/* Acordeón nativo: oculta el marcador por defecto */
+details > summary {
+  list-style: none;
+}
+details > summary::-webkit-details-marker {
+  display: none;
 }

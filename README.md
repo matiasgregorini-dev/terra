@@ -14,31 +14,39 @@ npm run lint
 
 ## Dónde se editan los contenidos
 
-Todos los datos institucionales están en **`lib/site.ts`**. Los campos vacíos no se
-muestran en el sitio (no se cargó ningún dato inventado).
+Todos los textos y datos están en **`lib/site.ts`**. Se transcribieron de la
+*Carpeta de Presentación* de Terra Consultora (PDF de 2015): misión, visión, servicios,
+detalle de cada servicio, formación, experiencia y datos de contacto. Solo se corrigieron
+errores ortográficos y de tipeo evidentes, y se quitó un ítem repetido.
+
+## Identidad visual
+
+- **Logo** (`public/logo.svg`) y **lema** "Potenciamos sus ideas" (`public/lema.svg`):
+  extraídos en vectores del PDF original, sin pérdida de calidad. `public/logo.png` es
+  una versión rasterizada para usos externos.
+- **Paleta** (valores exactos del PDF): verde `#38633B`, oliva `#C4BF66`, gris oliva
+  `#96946B`, piedra `#969480`, grafito `#707061`, salvia `#7A8A6B`.
+- **Tipografías:** Quicksand (títulos, redondeada como la carpeta) e Inter (texto).
+- **Motivos:** franjas verticales de la tapa y pestañas de color en los títulos, como
+  en las páginas interiores.
 
 ## Pendientes (TODO) antes de publicar
 
-| Qué | Dónde | Efecto mientras falte |
-| --- | --- | --- |
-| Texto de presentación (formación, años de experiencia, zona, enfoque) | `lib/site.ts` → `consultant.bio` (un string por párrafo) | "Quiénes somos" muestra solo nombre y rol |
-| Número de WhatsApp (solo dígitos, con código de país, ej. `5492392XXXXXX`) | `lib/site.ts` → `contact.whatsapp` | No se muestra el botón flotante ni el WhatsApp del pie |
-| Zona de trabajo | `lib/site.ts` → `contact.area` | No se muestra en el pie |
-| Dominio definitivo | `lib/site.ts` → `url` | Se usa la URL de producción de Vercel (`VERCEL_PROJECT_PRODUCTION_URL`) |
-| Foto de campo del hero (JPG, 1920×1080 o mayor) | `public/hero.jpg` | Se ve una imagen placeholder rotulada |
-| Logo (PNG cuadrado, fondo transparente) | `public/logo.png` | Se ve un logo placeholder |
-| Favicon definitivo (opcional) | `app/icon.svg` y `app/apple-icon.png` | Se usa un ícono provisorio con la paleta |
-
-Para reemplazar las imágenes, subí el archivo nuevo con **el mismo nombre** y volvé a desplegar.
+| Qué | Dónde |
+| --- | --- |
+| Confirmar que la experiencia marcada "Desde…" siga vigente y sumar lo posterior a 2015 | `lib/site.ts` → `profesional.trayectoria` |
+| Confirmar que el celular (02392) 15-546068 siga vigente y tenga WhatsApp | `lib/site.ts` → `contact` |
+| Foto de campo propia o con licencia (JPG, 1920×1080 o mayor) para la banda "Visión" | `public/hero.jpg` (hoy hay un fondo provisorio, tapado por una capa verde) |
+| Dominio: cargar `www.terraconsultora.com.ar` solo si sigue siendo tuyo | `lib/site.ts` → `url` |
 
 ## SEO y accesibilidad incluidos
 
 - `lang="es-AR"`, title, description, canonical, Open Graph (`og:locale` `es_AR`) y Twitter Card.
 - `robots.txt` y `sitemap.xml` generados por Next.js.
-- Favicon SVG y apple-touch-icon.
-- Contraste WCAG AA en todos los textos (verde `#2F5D3A` sobre crema: 6,8:1; el tono tierra
-  `#8B6B4A` se usa solo en elementos decorativos, y para texto chico una variante más oscura
-  `#6E5439`: 6,2:1). Capa oscura sobre la foto del hero para asegurar la legibilidad.
+- Favicon SVG y apple-touch-icon con el isotipo; imagen para redes `public/og.png` (1200×630).
+- Contraste WCAG AA en todos los textos: verde sobre blanco 7,0:1; tinta sobre oliva 7,2:1;
+  oliva sobre verde oscuro 4,9:1; grafito sobre blanco 5,0:1. El gris oliva, la piedra y la
+  salvia se usan solo como elementos decorativos.
 - `alt` en todas las imágenes, enlace "Saltar al contenido", foco visible y respeto de
   `prefers-reduced-motion`.
 

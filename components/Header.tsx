@@ -1,40 +1,50 @@
+"use client";
+
 import Image from "next/image";
+import { useState } from "react";
 import { site } from "@/lib/site";
 
 const links = [
-  { href: "#inicio", label: "Inicio" },
-  { href: "#quienes-somos", label: "Quiénes somos" },
+  { href: "#nosotros", label: "Nosotros" },
+  { href: "#servicios", label: "Servicios" },
+  { href: "#profesional", label: "Profesional" },
   { href: "#contacto", label: "Contacto" },
 ];
 
 export default function Header() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <header className="fixed inset-x-0 top-0 z-40 border-b border-verde/10 bg-crema shadow-sm">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6">
+    <header className="fixed inset-x-0 top-0 z-40 bg-white/95 shadow-sm backdrop-blur">
+      {/* Franja de marca */}
+      <div aria-hidden="true" className="flex h-1">
+        <div className="flex-[1] bg-oliva" />
+        <div className="flex-[2] bg-gris-oliva" />
+        <div className="flex-[6] bg-verde" />
+        <div className="flex-[1] bg-grafito" />
+      </div>
+      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <a
           href="#inicio"
-          className="flex shrink-0 items-center gap-2 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-verde"
+          className="shrink-0 rounded-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-verde"
         >
-          {/* TODO: reemplazar /public/logo.png por el logo definitivo (PNG cuadrado, fondo transparente). */}
           <Image
-            src="/logo.png"
-            alt={`Logo de ${site.name}`}
-            width={40}
-            height={40}
-            className="h-9 w-9 sm:h-10 sm:w-10"
+            src="/logo.svg"
+            alt={site.name}
+            width={203}
+            height={109}
+            className="h-11 w-auto"
             preload
           />
-          <span className="hidden whitespace-nowrap text-[0.95rem] min-[400px]:inline font-semibold tracking-tight text-verde sm:text-lg">
-            {site.name}
-          </span>
         </a>
-        <nav aria-label="Navegación principal">
-          <ul className="flex items-center gap-0.5 text-sm font-medium whitespace-nowrap sm:gap-2">
+
+        <nav aria-label="Navegación principal" className="hidden md:block">
+          <ul className="flex items-center gap-1 text-[0.95rem] font-medium">
             {links.map((link) => (
-              <li key={link.href} className={link.href === "#inicio" ? "hidden sm:block" : undefined}>
+              <li key={link.href}>
                 <a
                   href={link.href}
-                  className="rounded-md px-2 py-2 text-tinta transition-colors hover:text-verde focus-visible:outline-2 focus-visible:outline-verde sm:px-3"
+                  className="rounded-md px-3 py-2 text-tinta transition-colors hover:text-verde focus-visible:outline-2 focus-visible:outline-verde"
                 >
                   {link.label}
                 </a>
@@ -42,7 +52,40 @@ export default function Header() {
             ))}
           </ul>
         </nav>
+
+        <button
+          type="button"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-md text-verde focus-visible:outline-2 focus-visible:outline-verde md:hidden"
+          aria-expanded={open}
+          aria-controls="menu-movil"
+          aria-label={open ? "Cerrar menú" : "Abrir menú"}
+          onClick={() => setOpen((v) => !v)}
+        >
+          <svg viewBox="0 0 24 24" className="h-6 w-6" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            {open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
+          </svg>
+        </button>
       </div>
+
+      <nav
+        id="menu-movil"
+        aria-label="Navegación principal"
+        className={`border-t border-verde/10 bg-white md:hidden ${open ? "block" : "hidden"}`}
+      >
+        <ul className="mx-auto max-w-6xl px-4 py-2">
+          {links.map((link) => (
+            <li key={link.href}>
+              <a
+                href={link.href}
+                onClick={() => setOpen(false)}
+                className="block rounded-md px-2 py-3 text-base font-medium text-tinta hover:text-verde focus-visible:outline-2 focus-visible:outline-verde"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
     </header>
   );
 }
