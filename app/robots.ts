@@ -3,7 +3,12 @@ import { siteUrl } from "@/lib/site";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: { userAgent: "*", allow: "/" },
+    // El portal y sus pantallas de acceso son privados: no se indexan.
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/portal", "/ingresar", "/recuperar", "/auth"],
+    },
     sitemap: `${siteUrl()}/sitemap.xml`,
   };
 }

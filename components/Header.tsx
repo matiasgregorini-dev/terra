@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 import { site } from "@/lib/site";
 
@@ -10,6 +11,10 @@ const links = [
   { href: "#profesional", label: "Profesional" },
   { href: "#contacto", label: "Contacto" },
 ];
+
+// Entrada al portal privado (productores, técnicos y personal de campo).
+const portalClass =
+  "inline-flex min-h-10 items-center justify-center rounded-full border-2 border-verde px-4 text-[0.95rem] font-semibold text-verde transition-colors hover:bg-verde hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-verde";
 
 export default function Header() {
   const [open, setOpen] = useState(false);
@@ -50,6 +55,11 @@ export default function Header() {
                 </a>
               </li>
             ))}
+            <li className="ml-2">
+              <Link href="/ingresar" className={portalClass}>
+                Acceso clientes
+              </Link>
+            </li>
           </ul>
         </nav>
 
@@ -84,6 +94,11 @@ export default function Header() {
               </a>
             </li>
           ))}
+          <li className="mt-1 border-t border-verde/10 pt-3 pb-1">
+            <Link href="/ingresar" onClick={() => setOpen(false)} className={`${portalClass} w-full`}>
+              Acceso clientes
+            </Link>
+          </li>
         </ul>
       </nav>
     </header>

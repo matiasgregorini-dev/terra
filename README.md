@@ -50,7 +50,105 @@ errores ortográficos y de tipeo evidentes, y se quitó un ítem repetido.
 - `alt` en todas las imágenes, enlace "Saltar al contenido", foco visible y respeto de
   `prefers-reduced-motion`.
 
+## Portal de clientes (`/portal`)
+
+Área privada donde distintos actores consultan y cargan información de cada
+establecimiento. Se entra desde **"Acceso clientes"** en el encabezado del sitio.
+Usa **Supabase** (base Postgres, autenticación y almacenamiento de archivos).
+
+### Roles
+
+| Rol | Ve | Puede cargar / administrar |
+| --- | --- | --- |
+| **Administrador** (Terra) | Todo | Usuarios, roles y accesos; establecimientos; lotes, documentos y novedades (incluidas novedades generales) |
+| **Técnico / asesor de campo** | Sus establecimientos asignados | Lotes, documentos y novedades en esos establecimientos; borra solo lo que subió |
+| **Productor / cliente** | Sus establecimientos: lotes, todos los documentos y novedades | — |
+| **Personal del establecimiento** | Sus establecimientos y lotes; solo documentos y novedades marcados "visible para el personal" | — |
+
+- **Sin registro público:** las cuentas se crean solo por invitación del administrador.
+  La persona recibe un email, define su contraseña y entra con email + contraseña.
+- **Seguridad en la base (Row Level Security):** los permisos de la tabla anterior
+  los aplica Postgres en cada consulta, no la interfaz; aunque alguien arme una
+  petición a mano, solo obtiene lo que su rol permite. Las acciones del servidor
+  además verifican sesión y rol.
+- **Archivos privados:** los documentos (PDF, imágenes, Excel, Word, CSV, ZIP,
+  KMZ/KML; hasta 25 MB) se guardan en un bucket privado y se descargan con un
+  enlace firmado que vence a los 60 segundos.
+- **Desactivar una cuenta** corta el acceso a los datos y bloquea el ingreso, sin
+  borrar el historial. Se puede reactivar.
+
+### Puesta en marcha (una sola vez)
+
+1. **Crear el proyecto** en [supabase.com](https://supabase.com) (plan gratuito;
+   región sugerida: São Paulo, `sa-east-1`, la más cercana a Argentina).
+2. **Crear las tablas y permisos:** en *SQL Editor*, pegar y ejecutar completo
+   `supabase/migrations/20261014000000_portal.sql`.
+3. **Autenticación** (*Authentication → Sign In / Providers*):
+   - Desactivar **"Allow new users to sign up"** (registro público cerrado).
+   - Dejar **activado el proveedor Email**. Ojo: si se desactiva, también deja de
+     funcionar el ingreso con contraseña (comprobado en las pruebas).
+   - En la configuración del proveedor Email, longitud mínima de contraseña: **8**
+     (el portal también lo exige).
+4. **URLs** (*Authentication → URL Configuration*): *Site URL* = dominio del
+   sitio (p. ej. `https://www.terraconsultora.com.ar` o la URL de Vercel), y en
+   *Redirect URLs* agregar `https://<dominio>/**`.
+5. **Emails** (*Authentication → Emails*): reemplazar las plantillas
+   **Invite user** y **Reset password** por `supabase/plantillas-email/invitacion.html`
+   y `recuperacion.html` (el asunto sugerido está en la primera línea de cada
+   archivo). Son necesarias: los enlaces apuntan a `/auth/confirmar`, que crea la
+   sesión del lado del servidor.
+6. **Envío de emails (SMTP):** el servidor de emails que trae Supabase tiene un
+   límite muy bajo de envíos por hora y está pensado solo para pruebas. Para
+   producción, configurar un SMTP propio en *Authentication → Emails → SMTP
+   Settings* (p. ej. Resend, Brevo o el correo del dominio).
+7. **Variables en Vercel** (*Settings → Environment Variables*), según
+   `.env.example`: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+   y `SUPABASE_SECRET_KEY` (esta última, secreta). Volver a desplegar.
+8. **Primer administrador:** en *Authentication → Users → Invite user*, invitar
+   tu email. Aceptar la invitación, definir la contraseña y, en *SQL Editor*:
+
+   ```sql
+   update public.perfiles set rol = 'admin' where email = 'tu-email@ejemplo.com';
+   ```
+
+   Desde ahí, el resto de los usuarios se invitan desde el portal
+   (*Usuarios → Invitar usuario*).
+
+Mientras falten las variables, el sitio institucional funciona igual y la
+pantalla de ingreso avisa que el portal no está conectado.
+
+### Desarrollo local con Supabase
+
+```bash
+npx supabase start          # requiere Docker; aplica la migración y usa supabase/config.toml
+cp .env.example .env.local  # completar con la URL y claves que imprime el comando anterior
+npm run dev
+```
+
+Los emails de invitación y recuperación se ven en Mailpit (`http://127.0.0.1:54324`).
+
+### Pruebas
+
+- **Permisos por rol:** `./scripts/probar-permisos.sh` corre 32 verificaciones
+  de RLS en un Postgres descartable (ver `supabase/tests/README.md`; `initdb` no
+  corre como root).
+- **De punta a punta:** el portal se probó con Supabase local y un navegador
+  automatizado recorriendo los cuatro roles: invitación por email, activación,
+  carga de lotes, documentos y novedades, visibilidad por rol, intentos de acceso
+  a datos ajenos, desactivación de cuentas y recuperación de contraseña (46 pasos).
+
+### Dónde está el código
+
+| Qué | Dónde |
+| --- | --- |
+| Esquema, roles y permisos | `supabase/migrations/20261014000000_portal.sql` |
+| Sesión, rol y redirecciones | `proxy.ts`, `lib/portal/auth.ts` |
+| Clientes de Supabase | `lib/supabase/` |
+| Lecturas / acciones (altas y bajas) | `lib/portal/datos.ts`, `lib/portal/acciones/` |
+| Páginas | `app/ingresar`, `app/recuperar`, `app/auth`, `app/portal` |
+
 ## Despliegue en Vercel
 
-Importá el repositorio en Vercel; detecta Next.js automáticamente y no requiere variables
-de entorno.
+Importá el repositorio en Vercel; detecta Next.js automáticamente. El sitio
+institucional no requiere variables de entorno; el portal necesita las de
+Supabase (ver "Puesta en marcha").

@@ -1,0 +1,17 @@
+<!-- Plantilla "Invite user" de Supabase Auth (Authentication → Emails → Invite user).
+     Asunto sugerido: Te invitamos al portal de Terra Consultora -->
+<div style="font-family: Arial, Helvetica, sans-serif; color: #2a2e26; max-width: 520px; margin: 0 auto;">
+  <div style="height: 4px; background: #38633b;"></div>
+  <h2 style="color: #38633b; margin: 24px 0 8px;">Portal de Terra Consultora</h2>
+  <p>Hola{{ if .Data.nombre }} {{ .Data.nombre }}{{ end }}:</p>
+  <p>Terra Consultora te dio acceso a su portal, donde vas a encontrar la información de tus establecimientos: lotes, documentos y novedades.</p>
+  <p>Para activar tu cuenta, definí tu contraseña desde este enlace:</p>
+  <p style="margin: 28px 0;">
+    <a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=invite&next=/portal/cuenta%3Fbienvenida"
+       style="background: #38633b; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+      Activar mi cuenta
+    </a>
+  </p>
+  <p style="font-size: 13px; color: #707061;">El enlace se puede usar una sola vez y vence. Si ya no funciona, pedí uno nuevo desde «¿Olvidaste tu contraseña?» en la pantalla de ingreso. Si no esperabas este email, ignoralo.</p>
+  <p style="font-size: 13px; color: #707061;">Terra Consultora · Potenciamos sus ideas</p>
+</div>

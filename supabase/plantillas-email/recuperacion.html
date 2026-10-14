@@ -1,0 +1,15 @@
+<!-- Plantilla "Reset password" de Supabase Auth (Authentication → Emails → Reset password).
+     Asunto sugerido: Definí una contraseña nueva para el portal de Terra Consultora -->
+<div style="font-family: Arial, Helvetica, sans-serif; color: #2a2e26; max-width: 520px; margin: 0 auto;">
+  <div style="height: 4px; background: #38633b;"></div>
+  <h2 style="color: #38633b; margin: 24px 0 8px;">Portal de Terra Consultora</h2>
+  <p>Recibimos un pedido para definir una contraseña nueva para tu cuenta.</p>
+  <p style="margin: 28px 0;">
+    <a href="{{ .SiteURL }}/auth/confirmar?token_hash={{ .TokenHash }}&type=recovery&next=/portal/cuenta"
+       style="background: #38633b; color: #ffffff; padding: 12px 24px; border-radius: 8px; text-decoration: none; font-weight: bold;">
+      Definir contraseña nueva
+    </a>
+  </p>
+  <p style="font-size: 13px; color: #707061;">El enlace se puede usar una sola vez y vence en poco tiempo. Si no lo pediste, ignorá este email: tu contraseña actual sigue funcionando.</p>
+  <p style="font-size: 13px; color: #707061;">Terra Consultora · Potenciamos sus ideas</p>
+</div>
